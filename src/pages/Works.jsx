@@ -7,8 +7,6 @@ export default function Works() {
   return (
     <PageTransition>
       <section className="section section--top">
-        <h1 className="page__title">Works</h1>
-
         <ul className="worklist">
           {works.map((w, i) => (
             <motion.li
