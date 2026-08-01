@@ -29,6 +29,15 @@ export default function Works() {
               <Link to={`/works/${w.slug}`} className="worklist__text hoverable">
                 <h3 className="worklist__title">{w.title}</h3>
                 <p className="worklist__desc">{w.subtitle}</p>
+                {w.tags && w.tags.length > 0 && (
+                  <div className="worklist__tags">
+                    {w.tags.map((t) => (
+                      <span key={t} className="tag">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </Link>
             </motion.li>
           ))}

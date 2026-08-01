@@ -18,6 +18,14 @@ export default function CustomCursor() {
   const [clickable, setClickable] = useState(false);
   const [lens, setLens] = useState(false);
 
+  // Absolute reference to the SVG filter so the value survives CSS minification
+  // (kept inline) and the HashRouter hash never contaminates the fragment.
+  const filterUrl =
+    typeof window !== "undefined"
+      ? `url("${window.location.origin}${window.location.pathname}#cursor-lens")`
+      : "url(#cursor-lens)";
+  const lensBackdrop = `${filterUrl} brightness(1.04) saturate(1.06)`;
+
   useEffect(() => {
     // Disable on touch devices where a cursor makes no sense.
     if (window.matchMedia("(pointer: coarse)").matches) {
@@ -121,6 +129,11 @@ export default function CustomCursor() {
       )}
       <div
         ref={ringRef}
+        style={
+          lens
+            ? { backdropFilter: lensBackdrop, WebkitBackdropFilter: lensBackdrop }
+            : undefined
+        }
         className={`cursor-ring ${lens ? "cursor-ring--lens" : ""} ${
           hovering ? "cursor-ring--active" : ""
         } ${clickable ? "cursor-ring--hidden" : ""}`}

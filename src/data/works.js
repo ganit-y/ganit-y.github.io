@@ -15,7 +15,7 @@ export const works = [
     title: "Project Immune",
     subtitle:
       "An autonomous security product that fixes misconfigurations on its own – taken from the trusted few toward the mainstream.",
-    tags: ["Enterprise UX", "Security", "0→1"],
+    tags: ["UX Strategy", "0→1 Product", "Adoption & Growth", "Enterprise Security"],
     cover: "#1C1C1C",
     cardImage: "/assets/exports/Immune 9.png",
     heroImage: "/assets/exports/Immune 9.png",
@@ -35,7 +35,7 @@ export const works = [
           },
           {
             type: "text",
-            text: "Immune fixes those misconfigurations autonomously, but only where it predicts no productivity impact. For it to succeed it had to earn the user's trust and confidence to let it act on its own – while keeping the user feeling completely in control.",
+            text: "Immune, part of Microsoft Defender, fixes those misconfigurations autonomously, but only where it predicts no productivity impact. For it to succeed it had to earn the user's trust and confidence to let it act on its own – while keeping the user feeling completely in control.",
           },
           {
             type: "group",
@@ -267,8 +267,8 @@ export const works = [
     slug: "get-started-guide",
     title: "“Get started” guide",
     subtitle:
-      "Turning a hands-on, one-person onboarding into a self-serve in-product experience – built as a shared pattern across Defender.",
-    tags: ["Onboarding", "Design System", "Self-serve"],
+      "Turning a hands-on, one-person onboarding into a self-serve in-product experience – built as a shared pattern across Microsoft Defender.",
+    tags: ["Onboarding", "UX-Led", "UX Patterns", "Enterprise Security"],
     cover: "#323232",
     cardImage: "/assets/exports/GetStarted 12.png",
     meta: [
@@ -284,9 +284,9 @@ export const works = [
           {
             type: "list",
             items: [
-              "Exposure Management was a powerful new product that gave security teams real value, but provided almost no in-product guidance – a few notifications and scattered action cards.",
+              "Exposure Management, part of Microsoft Defender, was a powerful new product that gave security teams real value, but provided almost no in-product guidance – a few notifications and scattered action cards.",
               "Onboarding leaned on our CXE, who personally walked each new customer through their first weeks. It worked, but it didn't scale, and it capped how many customers reached value.",
-              "We needed an in-product experience that lets users feel in control and self-serve their way in – built as a shared pattern across Defender.",
+              "We needed an in-product experience that lets users feel in control and self-serve their way in – built as a shared pattern across Microsoft Defender.",
             ],
           },
           {
@@ -358,6 +358,7 @@ export const works = [
         blocks: [
           {
             type: "list",
+            emphasizeLead: true,
             items: [
               "Pull, not push – guidance is contextual and on-demand, never forced in front of users.",
               "Support autonomy and competence – help users feel in control and succeed at real tasks, rather than lecture them.",

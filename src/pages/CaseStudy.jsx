@@ -36,9 +36,20 @@ function Block({ block, onImageClick }) {
     case "list":
       return (
         <ul className="cs__list">
-          {block.items.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
+          {block.items.map((item, i) => {
+            if (block.emphasizeLead) {
+              const sep = item.indexOf(" – ");
+              if (sep !== -1) {
+                return (
+                  <li key={i}>
+                    <strong>{item.slice(0, sep)}</strong>
+                    {item.slice(sep)}
+                  </li>
+                );
+              }
+            }
+            return <li key={i}>{item}</li>;
+          })}
         </ul>
       );
 
