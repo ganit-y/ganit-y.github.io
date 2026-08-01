@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Works from "./pages/Works";
 import CaseStudy from "./pages/CaseStudy";
 import About from "./pages/About";
+import WorksGate from "./components/WorksGate";
 
 export default function App() {
   return (
@@ -11,8 +12,22 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/works" element={<Works />} />
-          <Route path="/works/:slug" element={<CaseStudy />} />
+          <Route
+            path="/works"
+            element={
+              <WorksGate>
+                <Works />
+              </WorksGate>
+            }
+          />
+          <Route
+            path="/works/:slug"
+            element={
+              <WorksGate>
+                <CaseStudy />
+              </WorksGate>
+            }
+          />
           <Route path="/about" element={<About />} />
         </Route>
       </Routes>

@@ -40,10 +40,6 @@ export default function About() {
           <div>
             <h1 className="page__title">About me</h1>
           </div>
-          {/* Drop resume.pdf into the public/ folder to enable this download. */}
-          <a className="btn btn--primary hoverable" href="/resume.pdf" download>
-            Download PDF
-          </a>
         </div>
 
         <div className="about__grid">
