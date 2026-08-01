@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Liquid lens cursor — lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f3f1ed;
+    --text: #323232;
+    --text-strong: #141414;
+    --muted: #8a8783;
+  }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100%;
+    cursor: none;
+    overflow-x: hidden;
+  }
+  a, button, .hoverable { cursor: none; }
+
+  /* ---------- content to distort ---------- */
+  .wrap { max-width: 900px; margin: 0 auto; padding: 10vh 24px 20vh; }
+  .eyebrow {
+    font-family: "Familjen Grotesk", sans-serif;
+    font-weight: 700; letter-spacing: -0.01em;
+    color: var(--muted); text-transform: uppercase; font-size: 0.8rem;
+  }
+  h1 {
+    font-family: "Familjen Grotesk", sans-serif;
+    font-weight: 700; letter-spacing: -0.03em; line-height: 1.02;
+    font-size: clamp(2.6rem, 7vw, 5rem); color: var(--text-strong);
+    margin: 14px 0 22px;
+  }
+  p.lede { font-size: 1.15rem; max-width: 56ch; line-height: 1.5; }
+  .grid-lines {
+    margin-top: 46px; height: 220px; border-radius: 16px; overflow: hidden;
+    background:
+      repeating-linear-gradient(0deg, #141414 0 2px, transparent 2px 22px),
+      repeating-linear-gradient(90deg, #141414 0 2px, transparent 2px 22px);
+    opacity: .9;
+  }
+  .row { display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap; }
+  .btn {
+    font-family: "Familjen Grotesk", sans-serif; font-weight: 500;
+    padding: 14px 22px; border-radius: 999px; border: 1px solid var(--text-strong);
+    background: transparent; color: var(--text-strong); font-size: 1rem;
+    transition: transform .25s ease;
+  }
+  .btn--solid { background: var(--text-strong); color: var(--bg); }
+  .links { margin-top: 40px; display: flex; gap: 28px; flex-wrap: wrap; }
+  .links a { color: var(--text-strong); text-decoration: none; font-size: 1.1rem; }
+  .swatches { display:flex; gap:14px; margin-top:40px; }
+  .swatch { width:96px; height:96px; border-radius:14px; }
+  .s1{background:#141414}.s2{background:#e5573f}.s3{background:#2f6df0}.s4{background:#f4c542}
+
+  /* ---------- the liquid GLASS lens ---------- */
+  #lens {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    width: 90px; height: 90px; margin: -45px 0 0 -45px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: transparent;
+    /* refract the backdrop + a touch of glassy lift */
+    -webkit-backdrop-filter: url(#lens-filter) brightness(1.04) saturate(1.06);
+    backdrop-filter: url(#lens-filter) brightness(1.04) saturate(1.06);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.35),
+                inset 6px 6px 14px rgba(255,255,255,.18),
+                inset -6px -6px 14px rgba(0,0,0,.10),
+                0 8px 24px rgba(20,18,26,.14);
+    will-change: transform;
+    transition: width .28s ease, height .28s ease, margin .28s ease;
+  }
+  #lens.big { width: 150px; height: 150px; margin: -75px 0 0 -75px; }
+  #lens.ring-off { box-shadow: none; }
+
+  /* control panel */
+  .panel {
+    position: fixed; right: 18px; bottom: 18px; z-index: 10000;
+    background: rgba(255,255,255,.82); backdrop-filter: blur(8px);
+    border: 1px solid rgba(0,0,0,.08); border-radius: 14px;
+    padding: 14px 16px; width: 258px; cursor: auto;
+    font-size: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,.10);
+  }
+  .panel * { cursor: auto; }
+  .panel h2 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 10px; font-family:"Familjen Grotesk",sans-serif; }
+  .ctl { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 9px 0; }
+  .ctl label { color: var(--text); }
+  .ctl input[type=range] { width: 120px; }
+  .ctl select { width: 132px; font: inherit; font-size: 0.8rem; padding: 3px 6px; border-radius: 8px; border: 1px solid rgba(0,0,0,.15); background: #fff; }
+  .ctl output { width: 34px; text-align: right; color: var(--text-strong); font-variant-numeric: tabular-nums; }
+  .hint { color: var(--muted); font-size: 0.72rem; margin-top: 10px; line-height: 1.4; }
+  .warn { color:#b23b2e; }
+</style>
+</head>
+<body>
+  <!-- turbulence -> displacement, applied to the BACKDROP via backdrop-filter -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="lens-filter" x="-50%" y="-50%" width="200%" height="200%">
+        <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise"/>
+        <feDisplacementMap id="disp" in="SourceGraphic" in2="noise" scale="26" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="lens"></div>
+
+  <main class="wrap">
+    <p class="eyebrow">Ganit Yahud ∗ Senior Product Designer</p>
+    <h1>Move your mouse.<br/>The glass bends what's behind it.</h1>
+    <p class="lede">The cursor is now an invisible liquid-glass lens. It refracts the content underneath using an animated SVG displacement filter on the backdrop — the blob has no shape of its own.</p>
+    <div class="grid-lines"></div>
+    <div class="row">
+      <button class="btn btn--solid hoverable">Primary action</button>
+      <button class="btn hoverable">Secondary</button>
+    </div>
+    <div class="links">
+      <a href="#" class="hoverable">Works</a>
+      <a href="#" class="hoverable">About</a>
+      <a href="#" class="hoverable">LinkedIn</a>
+    </div>
+    <div class="swatches">
+      <div class="swatch s1 hoverable"></div>
+      <div class="swatch s2 hoverable"></div>
+      <div class="swatch s3 hoverable"></div>
+      <div class="swatch s4 hoverable"></div>
+    </div>
+  </main>
+
+  <div class="panel">
+    <h2>Tune the lens</h2>
+    <div class="ctl"><label>Refraction</label><input id="c-scale" type="range" min="0" max="90" value="26"><output id="o-scale">26</output></div>
+    <div class="ctl"><label>Churn speed</label><input id="c-speed" type="range" min="0" max="100" value="35"><output id="o-speed">35</output></div>
+    <div class="ctl"><label>Follow lag</label><input id="c-lag" type="range" min="4" max="30" value="18"><output id="o-lag">18</output></div>
+    <div class="ctl"><label>Lens size</label><input id="c-size" type="range" min="40" max="200" value="90"><output id="o-size">90</output></div>
+    <div class="ctl"><label for="c-ring">Glass ring</label><input id="c-ring" type="checkbox" checked></div>
+    <div class="ctl"><label for="c-effect">Hover effect</label>
+      <select id="c-effect">
+        <option value="none">None</option>
+        <option value="invert">Invert</option>
+        <option value="grayscale">Grayscale</option>
+        <option value="hue">Hue shift</option>
+        <option value="brighten">Brighten</option>
+        <option value="darken">Darken (spotlight)</option>
+        <option value="contrast">Contrast punch</option>
+        <option value="frost">Frost (blur)</option>
+        <option value="liquid">Extra liquid</option>
+      </select>
+    </div>
+    <p class="hint" id="hint">Hover buttons/links/swatches to feel the effect. Drag sliders to taste.</p>
+  </div>
+
+<script>
+(function () {
+  const lens = document.getElementById('lens');
+  const turb = document.getElementById('turb');
+  const disp = document.getElementById('disp');
+
+  let mx = innerWidth/2, my = innerHeight/2, lx = mx, ly = my;
+  let lag = 18/100, t = 0, speed = 35;
+  let refraction = 26, effect = 'none', hovering = false;
+  const baseFreq = 0.012;
+  const BASE = 'url(#lens-filter) brightness(1.04) saturate(1.06)';
+  const FX = {
+    none: '',
+    invert: 'invert(1)',
+    grayscale: 'grayscale(1)',
+    hue: 'hue-rotate(160deg) saturate(1.6)',
+    brighten: 'brightness(1.7)',
+    darken: 'brightness(0.5)',
+    contrast: 'contrast(2)',
+    frost: 'blur(4px)',
+    liquid: '', // handled via displacement scale
+  };
+
+  function applyFX() {
+    const extra = hovering ? (FX[effect] || '') : '';
+    const val = (BASE + ' ' + extra).trim();
+    lens.style.backdropFilter = val;
+    lens.style.webkitBackdropFilter = val;
+    const scale = hovering && effect === 'liquid' ? refraction * 2.2 : refraction;
+    disp.setAttribute('scale', scale);
+  }
+
+  addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+  document.querySelectorAll('.hoverable').forEach(el => {
+    el.addEventListener('pointerenter', () => { hovering = true; lens.classList.add('big'); applyFX(); });
+    el.addEventListener('pointerleave', () => { hovering = false; lens.classList.remove('big'); applyFX(); });
+  });
+
+  const bind = (id, out, fn) => {
+    const inp = document.getElementById(id), o = document.getElementById(out);
+    const upd = () => { if (o) o.textContent = inp.value; fn(parseFloat(inp.value)); };
+    inp.addEventListener('input', upd); upd();
+  };
+  bind('c-scale','o-scale', v => { refraction = v; applyFX(); });
+  bind('c-speed','o-speed', v => speed = v);
+  bind('c-lag','o-lag', v => lag = (35 - v)/100);
+  bind('c-size','o-size', v => {
+    lens.style.width = v+'px'; lens.style.height = v+'px';
+    lens.style.margin = (-v/2)+'px 0 0 '+(-v/2)+'px';
+  });
+  document.getElementById('c-ring').addEventListener('change', e =>
+    lens.classList.toggle('ring-off', !e.target.checked));
+  document.getElementById('c-effect').addEventListener('change', e => {
+    effect = e.target.value; applyFX();
+  });
+  applyFX();
+
+  // feature check: does this engine refract the backdrop via url() filter?
+  if (!CSS.supports('backdrop-filter', 'url(#lens-filter)') &&
+      !CSS.supports('-webkit-backdrop-filter', 'url(#lens-filter)')) {
+    document.getElementById('hint').innerHTML =
+      '<span class="warn">Your browser may not refract via backdrop-filter url(). Best in Chrome/Edge.</span>';
+  }
+
+  function loop() {
+    t += 0.016;
+    lx += (mx - lx) * lag; ly += (my - ly) * lag;
+    lens.style.transform = `translate(${lx}px, ${ly}px)`;
+    const f  = baseFreq + Math.sin(t*1.3) * 0.005 * (speed/35);
+    const fy = baseFreq + Math.cos(t*0.9) * 0.005 * (speed/35);
+    turb.setAttribute('baseFrequency', `${Math.max(0.002,f)} ${Math.max(0.002,fy)}`);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
