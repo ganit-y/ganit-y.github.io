@@ -258,12 +258,18 @@ img {
 
 .page__eyebrow,
 .hero__eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.78rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--sans);
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--accent);
   margin: 0 0 12px;
+}
+.hero__eyebrow-mark {
+  display: inline-block;
+  font-size: 1em;
+  transform: translateY(0.16em);
 }
 .page__title {
   font-size: clamp(2rem, 5vw, 3rem);
@@ -354,7 +360,6 @@ img {
 .hero__lede {
   color: var(--muted);
   font-size: 1.2rem;
-  max-width: 540px;
   margin: 0 0 28px;
 }
 .hero__scroll {
