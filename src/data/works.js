@@ -14,7 +14,7 @@ export const works = [
     slug: "project-immune",
     title: "Project Immune",
     subtitle:
-      "An autonomous security product that fixes misconfigurations on its own – taken from the trusted few toward the mainstream.",
+      "Taking an innovative autonomous security product from design partners toward a broader audience.",
     tags: ["UX Strategy", "0→1 Product", "Adoption & Growth", "Enterprise Security"],
     cover: "#1C1C1C",
     cardImage: "/assets/exports/Immune 9.png",

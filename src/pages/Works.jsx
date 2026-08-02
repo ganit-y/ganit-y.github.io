@@ -19,23 +19,25 @@ export default function Works() {
             >
               <Link
                 to={`/works/${w.slug}`}
-                className="worklist__media hoverable"
+                className="worklist__link hoverable"
                 aria-label={w.title}
               >
-                <img src={w.cardImage} alt="" loading="lazy" />
-              </Link>
-              <Link to={`/works/${w.slug}`} className="worklist__text hoverable">
-                <h3 className="worklist__title">{w.title}</h3>
-                <p className="worklist__desc">{w.subtitle}</p>
-                {w.tags && w.tags.length > 0 && (
-                  <div className="worklist__tags">
-                    {w.tags.map((t) => (
-                      <span key={t} className="tag">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="worklist__media">
+                  <img src={w.cardImage} alt="" loading="lazy" />
+                </div>
+                <div className="worklist__text">
+                  <h3 className="worklist__title">{w.title}</h3>
+                  <p className="worklist__desc">{w.subtitle}</p>
+                  {w.tags && w.tags.length > 0 && (
+                    <div className="worklist__tags">
+                      {w.tags.map((t) => (
+                        <span key={t} className="worklist__tag">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </Link>
             </motion.li>
           ))}
